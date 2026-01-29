@@ -1,0 +1,54 @@
+{
+  "_meta": {
+    "description": "DBR Legacy Modernizacios Asszisztens - linear workflow",
+    "project": "dbr-info-agent",
+    "type": "linear"
+  },
+  "workflow": {
+    "nodes": {
+      "node_start": {
+        "type": "start",
+        "label": "Start",
+        "position": { "x": 0, "y": 0 },
+        "edge_order": ["edge_to_info"]
+      },
+      "node_info_agent": {
+        "type": "override_agent",
+        "label": "DBR tunder - Legacy Modernizacios Szakerto",
+        "position": { "x": 300, "y": 0 },
+        "conversation_config": {
+          "tts": {
+            "voice_id": "7B7mSWflzRSaO1yGeJH6"
+          },
+          "agent": {
+            "first_message": "Üdvözlöm! DBR tündér vagyok, a Digitális Banki Rendszerek legacy modernizációs szakértője. Miben segíthetek? Érdekli a COBOL vagy más régi rendszer korszerűsítése, esetleg a CodeRevive platformunk?",
+            "prompt": {
+              "prompt": "{{AGENT_PROMPT_FROM_FILE}}",
+              "llm": "gpt-4o",
+              "temperature": 0.3
+            }
+          }
+        },
+        "additional_knowledge_base": [
+          "kb-company-info",
+          "kb-faq",
+          "kb-data-security",
+          "kb-reverse-engineering",
+          "kb-coderevive"
+        ],
+        "edge_order": []
+      }
+    },
+    "edges": {
+      "edge_to_info": {
+        "source": "node_start",
+        "target": "node_info_agent",
+        "forward_condition": {
+          "type": "unconditional",
+          "label": null
+        }
+      }
+    },
+    "prevent_subagent_loops": false
+  }
+}

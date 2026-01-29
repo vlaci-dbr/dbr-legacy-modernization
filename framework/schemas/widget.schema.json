@@ -1,0 +1,167 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "widget.schema.json",
+  "title": "Widget Configuration",
+  "description": "ElevenLabs voice widget configuration schema",
+  "type": "object",
+  "required": ["agent_id", "position"],
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "description": "ElevenLabs agent ID"
+    },
+    "position": {
+      "type": "string",
+      "enum": ["bottom-right", "bottom-left", "top-right", "top-left", "center"],
+      "default": "bottom-right",
+      "description": "Widget position on page"
+    },
+    "theme": {
+      "type": "object",
+      "description": "Widget theme customization",
+      "properties": {
+        "primary_color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$",
+          "default": "#4A90D9",
+          "description": "Primary color (hex)"
+        },
+        "secondary_color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$",
+          "description": "Secondary color (hex)"
+        },
+        "background_color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$",
+          "default": "#FFFFFF",
+          "description": "Background color (hex)"
+        },
+        "text_color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$",
+          "default": "#333333",
+          "description": "Text color (hex)"
+        },
+        "border_radius": {
+          "type": "string",
+          "default": "12px",
+          "description": "Border radius"
+        },
+        "font_family": {
+          "type": "string",
+          "default": "inherit",
+          "description": "Font family"
+        },
+        "dark_mode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable dark mode theme"
+        }
+      }
+    },
+    "button": {
+      "type": "object",
+      "description": "Widget button customization",
+      "properties": {
+        "icon": {
+          "type": "string",
+          "enum": ["microphone", "phone", "chat", "custom"],
+          "default": "microphone",
+          "description": "Button icon"
+        },
+        "custom_icon_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Custom icon URL (if icon is 'custom')"
+        },
+        "text": {
+          "type": "string",
+          "description": "Button text (optional)"
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large"],
+          "default": "medium",
+          "description": "Button size"
+        },
+        "pulse_animation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable pulse animation"
+        }
+      }
+    },
+    "welcome_message": {
+      "type": "string",
+      "description": "Welcome message shown before conversation starts"
+    },
+    "behavior": {
+      "type": "object",
+      "description": "Widget behavior settings",
+      "properties": {
+        "auto_open": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically open widget"
+        },
+        "auto_open_delay_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 3000,
+          "description": "Delay before auto-open (ms)"
+        },
+        "show_on_mobile": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show widget on mobile devices"
+        },
+        "persist_across_pages": {
+          "type": "boolean",
+          "default": true,
+          "description": "Keep widget state across page navigation"
+        },
+        "close_on_outside_click": {
+          "type": "boolean",
+          "default": false,
+          "description": "Close widget when clicking outside"
+        }
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "description": "Accessibility settings",
+      "properties": {
+        "aria_label": {
+          "type": "string",
+          "default": "Voice assistant",
+          "description": "ARIA label for the widget"
+        },
+        "keyboard_shortcut": {
+          "type": "string",
+          "description": "Keyboard shortcut to toggle widget"
+        }
+      }
+    },
+    "analytics": {
+      "type": "object",
+      "description": "Analytics integration",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable analytics tracking"
+        },
+        "track_events": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["open", "close", "start_conversation", "end_conversation", "error"]
+          },
+          "description": "Events to track"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

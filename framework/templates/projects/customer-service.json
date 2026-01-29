@@ -1,0 +1,154 @@
+{
+  "_meta": {
+    "name": "Ügyfélszolgálat",
+    "description": "Általános ügyfélszolgálat termék és támogatás szakértőkkel",
+    "template_version": "1.0.0",
+    "example_company": "TechCorp Kft.",
+    "recommended_agents": 4,
+    "workflow_type": "branching"
+  },
+  "required_inputs": [
+    {
+      "id": "company_name",
+      "label": "Cég neve",
+      "type": "string",
+      "example": "TechCorp Kft."
+    },
+    {
+      "id": "company_phone",
+      "label": "Cég telefonszáma",
+      "type": "string",
+      "example": "+36 1 555 1234"
+    },
+    {
+      "id": "company_email",
+      "label": "Cég email címe",
+      "type": "string",
+      "example": "info@techcorp.hu"
+    },
+    {
+      "id": "opening_hours",
+      "label": "Nyitvatartás",
+      "type": "string",
+      "example": "H-P 9:00-18:00"
+    },
+    {
+      "id": "product_categories",
+      "label": "Termékkategóriák",
+      "type": "array",
+      "example": ["Szoftverek", "Hardverek", "Szolgáltatások"]
+    }
+  ],
+  "agents": [
+    {
+      "id": "receptionist",
+      "name_suggestion": "Réka",
+      "role": "orchestrator",
+      "description": "Fogadja a hívásokat és irányít",
+      "template": "agents/orchestrator.md",
+      "voice_style": "female.friendly",
+      "first_message": "Üdvözlöm a {company_name} ügyfélszolgálatán! {agent_name} vagyok. Miben segíthetek?"
+    },
+    {
+      "id": "sales-specialist",
+      "name_suggestion": "Bence",
+      "role": "specialist",
+      "description": "Termékekkel és vásárlással kapcsolatos kérdések",
+      "template": "agents/specialist.md",
+      "voice_style": "male.friendly",
+      "specialty": "Termékek és értékesítés",
+      "required_data": [
+        "Ügyfél neve",
+        "Érdeklődési terület",
+        "Költségkeret",
+        "Szállítási cím",
+        "Kapcsolattartási adatok"
+      ]
+    },
+    {
+      "id": "support-specialist",
+      "name_suggestion": "Gábor",
+      "role": "specialist",
+      "description": "Technikai támogatás és hibaelhárítás",
+      "template": "agents/specialist.md",
+      "voice_style": "male.professional",
+      "specialty": "Technikai támogatás",
+      "required_data": [
+        "Termék típusa",
+        "Vásárlás dátuma",
+        "Hiba leírása",
+        "Hibaüzenet (ha van)",
+        "Már próbált megoldások"
+      ]
+    },
+    {
+      "id": "finalizer",
+      "name_suggestion": "Összegző",
+      "role": "finalizer",
+      "description": "Összegzi és lezárja az interakciót",
+      "template": "agents/finalizer.md",
+      "voice_style": "female.professional",
+      "tools": ["create_ticket", "send_summary_email"]
+    }
+  ],
+  "knowledge_bases": [
+    {
+      "id": "kb-company-info",
+      "type": "company-info",
+      "template": "knowledge-bases/company-info.md",
+      "assigned_agents": ["receptionist", "sales-specialist", "support-specialist", "finalizer"]
+    },
+    {
+      "id": "kb-product-catalog",
+      "type": "product-catalog",
+      "template": "knowledge-bases/product-catalog.md",
+      "assigned_agents": ["sales-specialist"]
+    },
+    {
+      "id": "kb-support-faq",
+      "type": "faq",
+      "template": "knowledge-bases/faq.md",
+      "assigned_agents": ["receptionist", "support-specialist"]
+    },
+    {
+      "id": "kb-troubleshooting",
+      "type": "procedures",
+      "template": "knowledge-bases/procedures.md",
+      "assigned_agents": ["support-specialist"]
+    }
+  ],
+  "workflow": {
+    "type": "branching",
+    "template": "workflows/branching.json",
+    "routing_rules": [
+      {
+        "from": "receptionist",
+        "to": "sales-specialist",
+        "condition": "Ha az ügyfél termékekről, árakról, vásárlásról vagy rendelésről érdeklődik."
+      },
+      {
+        "from": "receptionist",
+        "to": "support-specialist",
+        "condition": "Ha az ügyfél hibát jelent, technikai segítséget kér, vagy nem működik valami."
+      }
+    ]
+  },
+  "output_structure": {
+    "config": {
+      "project.json": "Projekt metaadatok",
+      "workflow.json": "ElevenLabs native workflow"
+    },
+    "agents": {
+      "receptionist.md": "Orchestrator prompt",
+      "sales-specialist.md": "Sales specialist prompt",
+      "support-specialist.md": "Support specialist prompt",
+      "finalizer.md": "Finalizer prompt"
+    },
+    "knowledge-bases": {
+      "company-info.md": "Cég adatok",
+      "product-catalog.md": "Termékkatalógus",
+      "support-faq.md": "Support GYIK",
+      "troubleshooting.md": "Hibaelhárítás"
+    }
+  }
+}

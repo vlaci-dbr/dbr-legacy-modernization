@@ -1,0 +1,74 @@
+{
+  "id": "dbr-info-agent",
+  "name": "DBR Legacy Modernizacios Asszisztens",
+  "description": "Digitalis Banki Rendszerek Kft. AI-vezerelt legacy rendszer modernizacios szakerto asszisztense - CodeRevive platform",
+  "language": "hu",
+  "version": "1.0.0",
+  "company": {
+    "name": "Digitalis Banki Rendszerek Kft. (DBR)",
+    "email": "mail@dbr.hu",
+    "phone": "+36 20 961 2356",
+    "address": "H-1116 Budapest, Fehervari ut 108-112"
+  },
+  "agents": [
+    {
+      "id": "info-agent",
+      "name": "DBR tunder",
+      "role": "specialist",
+      "description": "Legacy modernizacios szakerto asszisztens - CodeRevive platform, forráskód biztonsag, reverse engineering",
+      "prompt_file": "agents/info-agent.md",
+      "voice": {
+        "style": "female.friendly",
+        "voice_id": "7B7mSWflzRSaO1yGeJH6"
+      },
+      "llm": {
+        "model": "gpt-4o",
+        "temperature": 0.3,
+        "max_tokens": 2048
+      },
+      "first_message": "Üdvözlöm! DBR tündér vagyok, a Digitális Banki Rendszerek legacy modernizációs szakértője. Miben segíthetek? Érdekli a COBOL vagy más régi rendszer korszerűsítése, esetleg a CodeRevive platformunk?"
+    }
+  ],
+  "knowledge_bases": [
+    {
+      "id": "kb-company-info",
+      "name": "DBR Ceginformaciok",
+      "type": "company-info",
+      "file": "knowledge-bases/kb-company-info.md",
+      "assigned_agents": ["info-agent"]
+    },
+    {
+      "id": "kb-faq",
+      "name": "Legacy Modernizacio FAQ",
+      "type": "faq",
+      "file": "knowledge-bases/kb-faq.md",
+      "assigned_agents": ["info-agent"]
+    },
+    {
+      "id": "kb-data-security",
+      "name": "Forraskod Biztonsag es Adatvedelem",
+      "type": "domain-knowledge",
+      "file": "knowledge-bases/kb-data-security.md",
+      "assigned_agents": ["info-agent"]
+    },
+    {
+      "id": "kb-reverse-engineering",
+      "name": "Reverse Engineering Szolgaltatas",
+      "type": "domain-knowledge",
+      "file": "knowledge-bases/kb-reverse-engineering.md",
+      "assigned_agents": ["info-agent"]
+    },
+    {
+      "id": "kb-legacy-modernization",
+      "name": "Legacy Rendszer Modernizacio - Atfogo Tudasbazis",
+      "type": "domain-knowledge",
+      "file": "knowledge-bases/kb-legacy-modernization.md",
+      "assigned_agents": ["info-agent"]
+    }
+  ],
+  "workflow": {
+    "type": "linear",
+    "config_file": "config/workflow.json"
+  },
+  "created_at": "2026-01-28T00:00:00Z"
+}

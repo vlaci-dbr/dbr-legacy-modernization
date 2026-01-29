@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "knowledge-base.schema.json",
+  "title": "ElevenLabs Knowledge Base",
+  "description": "Tudásbázis definíció séma",
+  "type": "object",
+  "required": ["id", "name", "type"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^kb-[a-z0-9-]+$",
+      "description": "KB azonosító (kb- prefix kötelező)",
+      "examples": ["kb-company-faq", "kb-health-procedures", "kb-product-catalog"]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "KB megjelenített neve",
+      "examples": ["Cég GYIK", "Egészségügyi Eljárások", "Termékkatalógus"]
+    },
+    "description": {
+      "type": "string",
+      "description": "KB rövid leírása"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["faq", "product-catalog", "company-info", "procedures", "domain-knowledge"],
+      "description": "KB típus"
+    },
+    "source_file": {
+      "type": "string",
+      "description": "Forrás markdown fájl útvonala",
+      "examples": ["knowledge-bases/company-faq.md"]
+    },
+    "content": {
+      "type": "string",
+      "description": "KB tartalom (ha nincs source_file)"
+    },
+    "assigned_agents": {
+      "type": "array",
+      "description": "Hozzárendelt agent ID-k",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$"
+      },
+      "examples": [["receptionist", "health-specialist"]]
+    },
+    "elevenlabs_id": {
+      "type": "string",
+      "description": "ElevenLabs KB ID (deploy után töltődik ki)"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Egyéb metaadatok",
+      "properties": {
+        "language": {
+          "type": "string",
+          "description": "KB nyelve"
+        },
+        "version": {
+          "type": "string",
+          "description": "KB verzió"
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Utolsó frissítés"
+        },
+        "author": {
+          "type": "string",
+          "description": "Szerző"
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Címkék"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "oneOf": [
+    { "required": ["source_file"] },
+    { "required": ["content"] }
+  ]
+}

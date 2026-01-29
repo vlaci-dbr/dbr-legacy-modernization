@@ -1,0 +1,108 @@
+{
+  "_meta": {
+    "description": "Lineáris workflow minta: Start → Agent1 → Agent2 → Agent3",
+    "usage": "Egyszerű, egymás utáni lépések esetén",
+    "example": "Receptionist → Specialist → Finalizer",
+    "note": "Claude: cseréld ki a NAGYBETŰS változókat a projekt-specifikus értékekre"
+  },
+  "workflow": {
+    "nodes": {
+      "start_node": {
+        "type": "start",
+        "label": "Start",
+        "position": { "x": 128.0, "y": 64.0 },
+        "edge_order": ["edge_start_to_first"]
+      },
+      "node_first_agent": {
+        "type": "override_agent",
+        "label": "FIRST_AGENT_NAME",
+        "position": { "x": 128.0, "y": 242.0 },
+        "edge_order": ["edge_first_to_second"],
+        "conversation_config": {
+          "tts": { "voice_id": "FIRST_AGENT_VOICE_ID" },
+          "agent": {
+            "first_message": "FIRST_AGENT_GREETING",
+            "prompt": {
+              "prompt": "FIRST_AGENT_PROMPT",
+              "llm": "gpt-4o-mini",
+              "temperature": 0.0
+            }
+          }
+        },
+        "additional_prompt": "",
+        "additional_knowledge_base": [],
+        "additional_tool_ids": []
+      },
+      "node_second_agent": {
+        "type": "override_agent",
+        "label": "SECOND_AGENT_NAME",
+        "position": { "x": 128.0, "y": 420.0 },
+        "edge_order": ["edge_second_to_third"],
+        "conversation_config": {
+          "tts": { "voice_id": "SECOND_AGENT_VOICE_ID" },
+          "agent": {
+            "prompt": {
+              "prompt": "SECOND_AGENT_PROMPT",
+              "llm": "gpt-4o",
+              "temperature": 0.2
+            }
+          }
+        },
+        "additional_prompt": "",
+        "additional_knowledge_base": [],
+        "additional_tool_ids": []
+      },
+      "node_third_agent": {
+        "type": "override_agent",
+        "label": "THIRD_AGENT_NAME",
+        "position": { "x": 128.0, "y": 598.0 },
+        "edge_order": [],
+        "conversation_config": {
+          "tts": { "voice_id": "THIRD_AGENT_VOICE_ID" },
+          "agent": {
+            "prompt": {
+              "prompt": "THIRD_AGENT_PROMPT",
+              "llm": "gpt-4o",
+              "temperature": 0.0
+            }
+          }
+        },
+        "additional_prompt": "",
+        "additional_knowledge_base": [],
+        "additional_tool_ids": []
+      }
+    },
+    "edges": {
+      "edge_start_to_first": {
+        "source": "start_node",
+        "target": "node_first_agent",
+        "forward_condition": {
+          "type": "unconditional",
+          "label": null
+        },
+        "backward_condition": null
+      },
+      "edge_first_to_second": {
+        "source": "node_first_agent",
+        "target": "node_second_agent",
+        "forward_condition": {
+          "type": "llm",
+          "label": null,
+          "condition": "FIRST_TO_SECOND_CONDITION"
+        },
+        "backward_condition": null
+      },
+      "edge_second_to_third": {
+        "source": "node_second_agent",
+        "target": "node_third_agent",
+        "forward_condition": {
+          "type": "llm",
+          "label": null,
+          "condition": "SECOND_TO_THIRD_CONDITION"
+        },
+        "backward_condition": null
+      }
+    },
+    "prevent_subagent_loops": false
+  }
+}

@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "conversational-ai-template"
+version = "1.0.0"
+description = "Reusable framework for ElevenLabs Conversational AI voice agent projects"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+keywords = ["elevenlabs", "voice-agent", "conversational-ai", "template"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "requests>=2.28.0",
+    "python-dotenv>=1.0.0",
+    "jsonschema>=4.17.0",
+]
+
+[project.optional-dependencies]
+cli = [
+    "click>=8.1.0",
+    "rich>=13.0.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "mypy>=1.0.0",
+    "types-requests",
+]
+
+[project.scripts]
+cai = "cli.main:cli"
+
+[project.urls]
+Homepage = "https://github.com/your-org/conversational-ai-template"
+Documentation = "https://github.com/your-org/conversational-ai-template#readme"
+Repository = "https://github.com/your-org/conversational-ai-template"
+
+[tool.setuptools.packages.find]
+include = ["lib*", "cli*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py39', 'py310', 'py311', 'py312']
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"

@@ -1,0 +1,176 @@
+{
+  "_meta": {
+    "name": "Event Guide",
+    "description": "Rendezvény információs asszisztens sablon",
+    "category": "event",
+    "language": "hu",
+    "complexity": "simple",
+    "agents_count": 1,
+    "use_cases": [
+      "Fesztiválok",
+      "Konferenciák",
+      "Sportesemények",
+      "Kiállítások",
+      "Kulturális események"
+    ],
+    "required_inputs": [
+      "event_name",
+      "event_date",
+      "venue_name",
+      "venue_address",
+      "agent_name"
+    ]
+  },
+  "template": {
+    "id": "{{project_id}}",
+    "name": "{{event_name}} - Információs Asszisztens",
+    "description": "Voice agent a(z) {{event_name}} rendezvényhez",
+    "language": "{{language|default:hu}}",
+    "company": {
+      "name": "{{organizer_name|default:Szervező}}",
+      "phone": "{{contact_phone}}",
+      "email": "{{contact_email}}",
+      "website": "{{website_url}}"
+    },
+    "agents": [
+      {
+        "id": "event-info-agent",
+        "name": "{{agent_name|default:Asszisztens}}",
+        "role": "orchestrator",
+        "description": "Információs asszisztens a rendezvényhez",
+        "prompt_file": "agents/event-info-agent.md",
+        "first_message": "Üdvözlöm! {{agent_name}} vagyok, a(z) {{event_name}} információs asszisztense. Miben segíthetek?",
+        "llm": {
+          "model": "gpt-4o-mini",
+          "temperature": 0
+        },
+        "voice": {
+          "voice_id": "{{voice_id|default:EXAVITQu4vr4xnSDxMaL}}",
+          "stability": 0.5,
+          "similarity_boost": 0.75
+        },
+        "knowledge_bases": [
+          "kb-event-info",
+          "kb-venue",
+          "kb-schedule",
+          "kb-faq"
+        ]
+      }
+    ],
+    "knowledge_bases": [
+      {
+        "id": "kb-event-info",
+        "name": "Esemény Információk",
+        "type": "company-info",
+        "source_file": "knowledge-bases/kb-event-info.md",
+        "description": "Az esemény általános információi"
+      },
+      {
+        "id": "kb-venue",
+        "name": "Helyszín Információk",
+        "type": "company-info",
+        "source_file": "knowledge-bases/kb-venue.md",
+        "description": "A helyszín megközelítése és szolgáltatásai"
+      },
+      {
+        "id": "kb-schedule",
+        "name": "Program",
+        "type": "procedures",
+        "source_file": "knowledge-bases/kb-schedule.md",
+        "description": "Esemény programja és időbeosztása"
+      },
+      {
+        "id": "kb-faq",
+        "name": "Gyakran Ismételt Kérdések",
+        "type": "faq",
+        "source_file": "knowledge-bases/kb-faq.md",
+        "description": "GYIK"
+      }
+    ],
+    "workflow": {
+      "type": "linear",
+      "config_file": "config/workflow.json"
+    }
+  },
+  "files_to_generate": {
+    "config/project.json": "Projekt konfiguráció",
+    "config/workflow.json": "Workflow definíció (egyszerű, 1 agent)",
+    "config/deployment.json": "Deployment beállítások",
+    "config/widget.json": "Widget testreszabás",
+    "agents/event-info-agent.md": "Agent prompt (6-pillar struktúra)",
+    "knowledge-bases/kb-event-info.md": "Esemény alap információk",
+    "knowledge-bases/kb-venue.md": "Helyszín információk",
+    "knowledge-bases/kb-schedule.md": "Program sablon",
+    "knowledge-bases/kb-faq.md": "GYIK sablon",
+    "web/index.html": "Landing page",
+    "deployment/agent-ids.json": "ElevenLabs ID-k (üres)",
+    "deployment/kb-ids.json": "KB ID-k (üres)"
+  },
+  "wizard_questions": [
+    {
+      "id": "event_name",
+      "question": "Mi az esemény neve?",
+      "type": "text",
+      "required": true,
+      "example": "Tech Konferencia 2026"
+    },
+    {
+      "id": "event_date",
+      "question": "Mikor lesz az esemény?",
+      "type": "text",
+      "required": true,
+      "example": "2026. március 15-16."
+    },
+    {
+      "id": "event_type",
+      "question": "Milyen típusú esemény?",
+      "type": "select",
+      "required": true,
+      "options": ["Konferencia", "Fesztivál", "Sportesemény", "Kiállítás", "Egyéb"]
+    },
+    {
+      "id": "venue_name",
+      "question": "Mi a helyszín neve?",
+      "type": "text",
+      "required": true,
+      "example": "Budapest Kongresszusi Központ"
+    },
+    {
+      "id": "venue_address",
+      "question": "Mi a helyszín címe?",
+      "type": "text",
+      "required": true,
+      "example": "1123 Budapest, Jagelló út 1-3."
+    },
+    {
+      "id": "agent_name",
+      "question": "Mi legyen az asszisztens neve?",
+      "type": "text",
+      "required": false,
+      "default": "Asszisztens",
+      "example": "Emma"
+    },
+    {
+      "id": "organizer_name",
+      "question": "Ki a szervező?",
+      "type": "text",
+      "required": false,
+      "example": "Példa Kft."
+    },
+    {
+      "id": "contact_email",
+      "question": "Kapcsolattartási email?",
+      "type": "email",
+      "required": false,
+      "example": "info@example.com"
+    },
+    {
+      "id": "language",
+      "question": "Milyen nyelven kommunikáljon?",
+      "type": "select",
+      "required": false,
+      "options": ["hu", "en"],
+      "default": "hu"
+    }
+  ]
+}

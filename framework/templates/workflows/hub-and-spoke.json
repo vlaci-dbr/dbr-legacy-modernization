@@ -1,0 +1,125 @@
+{
+  "_meta": {
+    "description": "Hub-and-spoke: Orchestrator ↔ Specialists (vissza is lehet térni)",
+    "usage": "Információs vonalak, ahol az ügyfél több témában is kérdezhet",
+    "example": "Info Hotline - több téma, mindig visszatér az orchestrator-hoz",
+    "note": "Claude: minden spoke-hoz adj hozzá egy node-ot és 2 edge-et (oda-vissza)"
+  },
+  "workflow": {
+    "nodes": {
+      "start_node": {
+        "type": "start",
+        "label": "Start",
+        "position": { "x": 400.0, "y": 50.0 },
+        "edge_order": ["edge_start_to_hub"]
+      },
+      "node_hub": {
+        "type": "override_agent",
+        "label": "HUB_AGENT_NAME",
+        "position": { "x": 400.0, "y": 200.0 },
+        "edge_order": ["edge_hub_to_spoke_1", "edge_hub_to_spoke_2"],
+        "conversation_config": {
+          "tts": { "voice_id": "HUB_VOICE_ID" },
+          "agent": {
+            "first_message": "HUB_GREETING",
+            "prompt": {
+              "prompt": "HUB_PROMPT",
+              "llm": "gpt-4o-mini",
+              "temperature": 0.0
+            }
+          }
+        },
+        "additional_prompt": "",
+        "additional_knowledge_base": [],
+        "additional_tool_ids": []
+      },
+      "node_spoke_1": {
+        "type": "override_agent",
+        "label": "SPOKE_1_NAME",
+        "position": { "x": 200.0, "y": 450.0 },
+        "edge_order": ["edge_spoke_1_back_to_hub"],
+        "conversation_config": {
+          "tts": { "voice_id": "SPOKE_1_VOICE_ID" },
+          "agent": {
+            "prompt": {
+              "prompt": "SPOKE_1_PROMPT",
+              "llm": "gpt-4o",
+              "temperature": 0.2
+            }
+          }
+        },
+        "additional_prompt": "",
+        "additional_knowledge_base": [],
+        "additional_tool_ids": []
+      },
+      "node_spoke_2": {
+        "type": "override_agent",
+        "label": "SPOKE_2_NAME",
+        "position": { "x": 600.0, "y": 450.0 },
+        "edge_order": ["edge_spoke_2_back_to_hub"],
+        "conversation_config": {
+          "tts": { "voice_id": "SPOKE_2_VOICE_ID" },
+          "agent": {
+            "prompt": {
+              "prompt": "SPOKE_2_PROMPT",
+              "llm": "gpt-4o",
+              "temperature": 0.2
+            }
+          }
+        },
+        "additional_prompt": "",
+        "additional_knowledge_base": [],
+        "additional_tool_ids": []
+      }
+    },
+    "edges": {
+      "edge_start_to_hub": {
+        "source": "start_node",
+        "target": "node_hub",
+        "forward_condition": { "type": "unconditional", "label": null },
+        "backward_condition": null
+      },
+      "edge_hub_to_spoke_1": {
+        "source": "node_hub",
+        "target": "node_spoke_1",
+        "forward_condition": {
+          "type": "llm",
+          "label": null,
+          "condition": "HUB_TO_SPOKE_1_CONDITION"
+        },
+        "backward_condition": null
+      },
+      "edge_hub_to_spoke_2": {
+        "source": "node_hub",
+        "target": "node_spoke_2",
+        "forward_condition": {
+          "type": "llm",
+          "label": null,
+          "condition": "HUB_TO_SPOKE_2_CONDITION"
+        },
+        "backward_condition": null
+      },
+      "edge_spoke_1_back_to_hub": {
+        "source": "node_spoke_1",
+        "target": "node_hub",
+        "forward_condition": {
+          "type": "llm",
+          "label": null,
+          "condition": "Ha az ügyfélnek más témában is van kérdése, vagy a téma lezárult."
+        },
+        "backward_condition": null
+      },
+      "edge_spoke_2_back_to_hub": {
+        "source": "node_spoke_2",
+        "target": "node_hub",
+        "forward_condition": {
+          "type": "llm",
+          "label": null,
+          "condition": "Ha az ügyfélnek más témában is van kérdése, vagy a téma lezárult."
+        },
+        "backward_condition": null
+      }
+    },
+    "prevent_subagent_loops": false
+  }
+}

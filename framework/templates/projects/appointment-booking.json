@@ -1,0 +1,153 @@
+{
+  "_meta": {
+    "name": "Időpontfoglaló",
+    "description": "Egyszerű időpontfoglaló rendszer",
+    "template_version": "1.0.0",
+    "example_company": "Dr. Kovács Fogászat",
+    "recommended_agents": 2,
+    "workflow_type": "linear"
+  },
+  "required_inputs": [
+    {
+      "id": "company_name",
+      "label": "Cég/rendelő neve",
+      "type": "string",
+      "example": "Dr. Kovács Fogászat"
+    },
+    {
+      "id": "company_phone",
+      "label": "Telefonszám",
+      "type": "string",
+      "example": "+36 1 333 4444"
+    },
+    {
+      "id": "company_email",
+      "label": "Email cím",
+      "type": "string",
+      "example": "rendelo@drkovacs.hu"
+    },
+    {
+      "id": "opening_hours",
+      "label": "Rendelési idő",
+      "type": "string",
+      "example": "H-P 8:00-16:00"
+    },
+    {
+      "id": "services",
+      "label": "Elérhető szolgáltatások",
+      "type": "array",
+      "example": ["Fogászati vizsgálat", "Fogtömés", "Fogfehérítés", "Konzultáció"]
+    },
+    {
+      "id": "appointment_slots",
+      "label": "Időpontok formátuma",
+      "type": "string",
+      "example": "30 perces időpontok, egész és fél órától"
+    }
+  ],
+  "agents": [
+    {
+      "id": "booking-agent",
+      "name_suggestion": "Eszter",
+      "role": "orchestrator",
+      "description": "Időpontfoglalás és információadás",
+      "template": "agents/orchestrator.md",
+      "voice_style": "female.friendly",
+      "first_message": "Üdvözlöm! {company_name}, {agent_name} vagyok. Időpontot szeretne foglalni vagy van kérdése?"
+    },
+    {
+      "id": "finalizer",
+      "name_suggestion": "Összegző",
+      "role": "finalizer",
+      "description": "Foglalás megerősítése és lezárás",
+      "template": "agents/finalizer.md",
+      "voice_style": "female.professional",
+      "tools": ["create_appointment", "send_reminder_email"]
+    }
+  ],
+  "knowledge_bases": [
+    {
+      "id": "kb-company-info",
+      "type": "company-info",
+      "template": "knowledge-bases/company-info.md",
+      "assigned_agents": ["booking-agent", "finalizer"]
+    },
+    {
+      "id": "kb-services",
+      "type": "product-catalog",
+      "template": "knowledge-bases/product-catalog.md",
+      "assigned_agents": ["booking-agent"]
+    },
+    {
+      "id": "kb-booking-faq",
+      "type": "faq",
+      "template": "knowledge-bases/faq.md",
+      "assigned_agents": ["booking-agent"]
+    }
+  ],
+  "workflow": {
+    "type": "linear",
+    "template": "workflows/linear.json",
+    "routing_rules": [
+      {
+        "from": "booking-agent",
+        "to": "finalizer",
+        "condition": "Ha az időpont adatok (szolgáltatás, dátum, idő, név, telefonszám) megvannak."
+      }
+    ]
+  },
+  "booking_data_structure": {
+    "required_fields": [
+      {
+        "id": "client_name",
+        "label": "Ügyfél neve",
+        "validation": "Minimum 2 szó"
+      },
+      {
+        "id": "client_phone",
+        "label": "Telefonszám",
+        "validation": "Minimum 9 számjegy"
+      },
+      {
+        "id": "service_type",
+        "label": "Szolgáltatás típusa",
+        "validation": "Az elérhető szolgáltatások egyike"
+      },
+      {
+        "id": "preferred_date",
+        "label": "Kívánt dátum",
+        "validation": "Jövőbeli dátum"
+      },
+      {
+        "id": "preferred_time",
+        "label": "Kívánt időpont",
+        "validation": "Rendelési időn belül"
+      }
+    ],
+    "optional_fields": [
+      {
+        "id": "notes",
+        "label": "Megjegyzés"
+      },
+      {
+        "id": "email",
+        "label": "Email cím visszaigazoláshoz"
+      }
+    ]
+  },
+  "output_structure": {
+    "config": {
+      "project.json": "Projekt metaadatok",
+      "workflow.json": "ElevenLabs native workflow"
+    },
+    "agents": {
+      "booking-agent.md": "Booking agent prompt",
+      "finalizer.md": "Finalizer prompt"
+    },
+    "knowledge-bases": {
+      "company-info.md": "Cég/rendelő adatok",
+      "services.md": "Szolgáltatások listája",
+      "booking-faq.md": "Foglalási GYIK"
+    }
+  }
+}

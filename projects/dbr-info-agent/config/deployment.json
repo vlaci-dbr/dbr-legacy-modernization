@@ -1,0 +1,16 @@
+{
+  "target": "manual",
+  "elevenlabs": {
+    "auto_deploy": false,
+    "dry_run": true,
+    "update_existing": true
+  },
+  "environment": {
+    "production": {
+      "url": null
+    },
+    "staging": {
+      "url": null
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "_meta": {
+    "description": "Elágazó workflow: Orchestrator → N Specialist → Finalizer",
+    "usage": "Többféle szakterület, egy orchestrator irányít",
+    "example": "Receptionist → [Health|Vehicle|Luggage Specialist] → Finalizer",
+    "note": "Claude: minden specialist-hoz adj hozzá egy node-ot és 2 edge-et"
+  },
+  "workflow": {
+    "nodes": {
+      "start_node": {
+        "type": "start",
+        "label": "Start",
+        "position": { "x": 400.0, "y": 50.0 },
+        "edge_order": ["edge_start_to_orchestrator"]
+      },
+      "node_orchestrator": {
+        "type": "override_agent",
+        "label": "ORCHESTRATOR_NAME",
+        "position": { "x": 400.0, "y": 200.0 },
+        "edge_order": ["edge_orchestrator_to_specialist_1", "edge_orchestrator_to_specialist_2"],
+        "conversation_config": {
+          "tts": { "voice_id": "ORCHESTRATOR_VOICE_ID" },
+          "agent": {
+            "first_message": "ORCHESTRATOR_GREETING",
+            "prompt": {
+              "prompt": "ORCHESTRATOR_PROMPT",
+              "llm": "gpt-4o-mini",
+              "temperature": 0.0
+            }
+          }
+        },
+        "additional_prompt": "",
+        "additional_knowledge_base": [],
+        "additional_tool_ids": []
+      },
+      "node_specialist_1": {
+        "type": "override_agent",
+        "label": "SPECIALIST_1_NAME",
+        "position": { "x": 200.0, "y": 450.0 },
+        "edge_order": ["edge_specialist_1_to_finalizer"],
+        "conversation_config": {
+          "tts": { "voice_id": "SPECIALIST_1_VOICE_ID" },
+          "agent": {
+            "prompt": {
+              "prompt": "SPECIALIST_1_PROMPT",
+              "llm": "gpt-4o",
+              "temperature": 0.2
+            }
+          }
+        },
+        "additional_prompt": "",
+        "additional_knowledge_base": [],
+        "additional_tool_ids": []
+      },
+      "node_specialist_2": {
+        "type": "override_agent",
+        "label": "SPECIALIST_2_NAME",
+        "position": { "x": 600.0, "y": 450.0 },
+        "edge_order": ["edge_specialist_2_to_finalizer"],
+        "conversation_config": {
+          "tts": { "voice_id": "SPECIALIST_2_VOICE_ID" },
+          "agent": {
+            "prompt": {
+              "prompt": "SPECIALIST_2_PROMPT",
+              "llm": "gpt-4o",
+              "temperature": 0.2
+            }
+          }
+        },
+        "additional_prompt": "",
+        "additional_knowledge_base": [],
+        "additional_tool_ids": []
+      },
+      "node_finalizer": {
+        "type": "override_agent",
+        "label": "FINALIZER_NAME",
+        "position": { "x": 400.0, "y": 700.0 },
+        "edge_order": [],
+        "conversation_config": {
+          "tts": { "voice_id": "FINALIZER_VOICE_ID" },
+          "agent": {
+            "prompt": {
+              "prompt": "FINALIZER_PROMPT",
+              "llm": "gpt-4o",
+              "temperature": 0.0
+            }
+          }
+        },
+        "additional_prompt": "",
+        "additional_knowledge_base": [],
+        "additional_tool_ids": []
+      }
+    },
+    "edges": {
+      "edge_start_to_orchestrator": {
+        "source": "start_node",
+        "target": "node_orchestrator",
+        "forward_condition": { "type": "unconditional", "label": null },
+        "backward_condition": null
+      },
+      "edge_orchestrator_to_specialist_1": {
+        "source": "node_orchestrator",
+        "target": "node_specialist_1",
+        "forward_condition": {
+          "type": "llm",
+          "label": null,
+          "condition": "ORCHESTRATOR_TO_SPECIALIST_1_CONDITION"
+        },
+        "backward_condition": null
+      },
+      "edge_orchestrator_to_specialist_2": {
+        "source": "node_orchestrator",
+        "target": "node_specialist_2",
+        "forward_condition": {
+          "type": "llm",
+          "label": null,
+          "condition": "ORCHESTRATOR_TO_SPECIALIST_2_CONDITION"
+        },
+        "backward_condition": null
+      },
+      "edge_specialist_1_to_finalizer": {
+        "source": "node_specialist_1",
+        "target": "node_finalizer",
+        "forward_condition": {
+          "type": "llm",
+          "label": null,
+          "condition": "Ha az adatgyűjtés befejeződött és az ügyfél készen áll a lezárásra."
+        },
+        "backward_condition": null
+      },
+      "edge_specialist_2_to_finalizer": {
+        "source": "node_specialist_2",
+        "target": "node_finalizer",
+        "forward_condition": {
+          "type": "llm",
+          "label": null,
+          "condition": "Ha az adatgyűjtés befejeződött és az ügyfél készen áll a lezárásra."
+        },
+        "backward_condition": null
+      }
+    },
+    "prevent_subagent_loops": false
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "_meta": {
+    "description": "Magyar hangok és ajánlott voice ID-k ElevenLabs-hoz",
+    "usage": "Claude ezeket a hangokat ajánlja magyar projekteknél",
+    "note": "A voice_id értékeket a tényleges ElevenLabs voice ID-kra kell cserélni"
+  },
+  "hungarian": {
+    "female": {
+      "friendly": {
+        "name": "Zsófi",
+        "voice_id": "REPLACE_WITH_ACTUAL_VOICE_ID",
+        "description": "Barátságos női hang, ideális receptionist szerepre",
+        "recommended_roles": ["orchestrator"],
+        "preset": "friendly"
+      },
+      "professional": {
+        "name": "Kata",
+        "voice_id": "REPLACE_WITH_ACTUAL_VOICE_ID",
+        "description": "Professzionális női hang, ideális specialist szerepre",
+        "recommended_roles": ["specialist", "finalizer"],
+        "preset": "professional"
+      },
+      "calm": {
+        "name": "Anna",
+        "voice_id": "REPLACE_WITH_ACTUAL_VOICE_ID",
+        "description": "Nyugodt női hang, ideális egészségügyi témákhoz",
+        "recommended_roles": ["specialist"],
+        "preset": "calm"
+      }
+    },
+    "male": {
+      "friendly": {
+        "name": "Péter",
+        "voice_id": "REPLACE_WITH_ACTUAL_VOICE_ID",
+        "description": "Barátságos férfi hang",
+        "recommended_roles": ["orchestrator", "specialist"],
+        "preset": "friendly"
+      },
+      "professional": {
+        "name": "Bence",
+        "voice_id": "REPLACE_WITH_ACTUAL_VOICE_ID",
+        "description": "Professzionális férfi hang",
+        "recommended_roles": ["specialist", "finalizer"],
+        "preset": "professional"
+      }
+    }
+  },
+  "english": {
+    "female": {
+      "friendly": {
+        "name": "Sarah",
+        "voice_id": "EXAVITQu4vr4xnSDxMaL",
+        "description": "Friendly female voice (ElevenLabs default)",
+        "recommended_roles": ["orchestrator"],
+        "preset": "friendly"
+      },
+      "professional": {
+        "name": "Rachel",
+        "voice_id": "21m00Tcm4TlvDq8ikWAM",
+        "description": "Professional female voice",
+        "recommended_roles": ["specialist", "finalizer"],
+        "preset": "professional"
+      }
+    },
+    "male": {
+      "friendly": {
+        "name": "Josh",
+        "voice_id": "TxGEqnHWrfWFTfGW9XjX",
+        "description": "Friendly male voice",
+        "recommended_roles": ["orchestrator", "specialist"],
+        "preset": "friendly"
+      },
+      "professional": {
+        "name": "Adam",
+        "voice_id": "pNInz6obpgDQGcFmaJgB",
+        "description": "Professional male voice",
+        "recommended_roles": ["specialist", "finalizer"],
+        "preset": "professional"
+      }
+    }
+  },
+  "role_recommendations": {
+    "orchestrator": {
+      "style": "friendly",
+      "reason": "Első benyomás, barátságos fogadtatás"
+    },
+    "specialist": {
+      "style": "professional",
+      "reason": "Szakértelem és megbízhatóság sugárzása"
+    },
+    "finalizer": {
+      "style": "professional",
+      "reason": "Hivatalos összegzés, professzionális lezárás"
+    }
+  }
+}

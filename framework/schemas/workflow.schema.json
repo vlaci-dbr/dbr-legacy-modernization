@@ -1,0 +1,195 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "workflow.schema.json",
+  "title": "ElevenLabs Workflow",
+  "description": "ElevenLabs native workflow séma (nodes/edges gráf)",
+  "type": "object",
+  "required": ["workflow"],
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "description": "Metaadatok (nem kerül az API-ba)",
+      "properties": {
+        "description": { "type": "string" },
+        "usage": { "type": "string" },
+        "example": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "required": ["nodes", "edges"],
+      "properties": {
+        "nodes": {
+          "type": "object",
+          "description": "Workflow node-ok (node_id -> node config)",
+          "additionalProperties": {
+            "$ref": "#/definitions/node"
+          }
+        },
+        "edges": {
+          "type": "object",
+          "description": "Workflow edge-ek (edge_id -> edge config)",
+          "additionalProperties": {
+            "$ref": "#/definitions/edge"
+          }
+        },
+        "prevent_subagent_loops": {
+          "type": "boolean",
+          "default": false,
+          "description": "Sub-agent loop-ok megakadályozása"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "definitions": {
+    "node": {
+      "type": "object",
+      "required": ["type", "label"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["start", "override_agent"],
+          "description": "Node típus (CSAK start vagy override_agent)"
+        },
+        "label": {
+          "type": "string",
+          "description": "Node megjelenített neve"
+        },
+        "position": {
+          "type": "object",
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" }
+          },
+          "description": "Vizuális pozíció az editorban"
+        },
+        "edge_order": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Kimenő edge-ek sorrendje (LLM kiértékelés sorrendje)"
+        },
+        "conversation_config": {
+          "$ref": "#/definitions/conversation_config"
+        },
+        "additional_prompt": {
+          "type": "string",
+          "default": "",
+          "description": "Kiegészítő prompt"
+        },
+        "additional_knowledge_base": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Kiegészítő KB referenciák"
+        },
+        "additional_tool_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Kiegészítő tool ID-k"
+        }
+      },
+      "additionalProperties": false
+    },
+    "edge": {
+      "type": "object",
+      "required": ["source", "target", "forward_condition"],
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Forrás node ID"
+        },
+        "target": {
+          "type": "string",
+          "description": "Cél node ID"
+        },
+        "forward_condition": {
+          "$ref": "#/definitions/condition"
+        },
+        "backward_condition": {
+          "oneOf": [
+            { "$ref": "#/definitions/condition" },
+            { "type": "null" }
+          ],
+          "description": "Visszafelé irányú feltétel (opcionális)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "condition": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["unconditional", "llm"],
+          "description": "Feltétel típus (CSAK unconditional vagy llm)"
+        },
+        "label": {
+          "type": ["string", "null"],
+          "description": "Feltétel címkéje"
+        },
+        "condition": {
+          "type": "string",
+          "description": "LLM feltétel szövege (természetes nyelven, csak 'llm' típusnál)"
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": { "type": { "const": "llm" } }
+          },
+          "then": {
+            "required": ["condition"]
+          }
+        }
+      ]
+    },
+    "conversation_config": {
+      "type": "object",
+      "description": "Agent conversation konfiguráció",
+      "properties": {
+        "tts": {
+          "type": "object",
+          "properties": {
+            "voice_id": {
+              "type": "string",
+              "description": "ElevenLabs voice ID"
+            }
+          }
+        },
+        "agent": {
+          "type": "object",
+          "properties": {
+            "first_message": {
+              "type": "string",
+              "description": "Üdvözlő üzenet"
+            },
+            "prompt": {
+              "type": "object",
+              "properties": {
+                "prompt": {
+                  "type": "string",
+                  "description": "Agent prompt szövege"
+                },
+                "llm": {
+                  "type": "string",
+                  "description": "LLM modell azonosító"
+                },
+                "temperature": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 2,
+                  "description": "LLM temperature"
+                }
+              }
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,178 @@
+{
+  "_meta": {
+    "name": "Biztosítási Kárigény Bejelentő",
+    "description": "Biztosítási kárigény bejelentő rendszer, több szakterülettel",
+    "template_version": "1.0.0",
+    "example_company": "EUB Biztosító",
+    "recommended_agents": 5,
+    "workflow_type": "branching"
+  },
+  "required_inputs": [
+    {
+      "id": "company_name",
+      "label": "Cég neve",
+      "type": "string",
+      "example": "EUB Biztosító"
+    },
+    {
+      "id": "company_phone",
+      "label": "Cég telefonszáma",
+      "type": "string",
+      "example": "+36 1 234 5678"
+    },
+    {
+      "id": "company_email",
+      "label": "Cég email címe",
+      "type": "string",
+      "example": "info@eub.hu"
+    },
+    {
+      "id": "opening_hours",
+      "label": "Nyitvatartás",
+      "type": "string",
+      "example": "H-P 8:00-17:00"
+    },
+    {
+      "id": "specialties",
+      "label": "Szakterületek listája",
+      "type": "array",
+      "example": ["Egészségügyi károk", "Gépjármű károk", "Poggyász és útlemondás"]
+    }
+  ],
+  "agents": [
+    {
+      "id": "receptionist",
+      "name_suggestion": "Zsófi",
+      "role": "orchestrator",
+      "description": "Fogadja a hívásokat és a megfelelő szakértőhöz irányít",
+      "template": "agents/orchestrator.md",
+      "voice_style": "female.friendly",
+      "first_message": "Üdvözlöm! {company_name} ügyfélszolgálat, {agent_name} vagyok. Miben segíthetek?"
+    },
+    {
+      "id": "health-specialist",
+      "name_suggestion": "Kata",
+      "role": "specialist",
+      "description": "Egészségügyi és baleseti károk kezelése",
+      "template": "agents/specialist.md",
+      "voice_style": "female.professional",
+      "specialty": "Egészségügyi és baleseti károk",
+      "required_data": [
+        "Kötvényszám",
+        "Biztosított neve",
+        "Utazás időpontja és helyszíne",
+        "Esemény dátuma és leírása",
+        "Ellátás típusa",
+        "Költség összege"
+      ]
+    },
+    {
+      "id": "vehicle-specialist",
+      "name_suggestion": "Péter",
+      "role": "specialist",
+      "description": "Gépjármű károk kezelése",
+      "template": "agents/specialist.md",
+      "voice_style": "male.professional",
+      "specialty": "Gépjármű károk",
+      "required_data": [
+        "Kötvényszám",
+        "Gépjármű rendszáma",
+        "Esemény helyszíne és ideje",
+        "Kár leírása",
+        "Rendőrségi jegyzőkönyv száma",
+        "Becsült kárérték"
+      ]
+    },
+    {
+      "id": "luggage-specialist",
+      "name_suggestion": "Anna",
+      "role": "specialist",
+      "description": "Poggyász és útlemondás kezelése",
+      "template": "agents/specialist.md",
+      "voice_style": "female.calm",
+      "specialty": "Poggyász és útlemondás",
+      "required_data": [
+        "Kötvényszám",
+        "Légitársaság és járatszám",
+        "PIR szám",
+        "Hiányzó/sérült tárgyak",
+        "Becsült érték"
+      ]
+    },
+    {
+      "id": "finalizer",
+      "name_suggestion": "Összegző",
+      "role": "finalizer",
+      "description": "Összegzi az adatokat és lezárja az ügyet",
+      "template": "agents/finalizer.md",
+      "voice_style": "female.professional",
+      "tools": ["generate_case_id", "send_confirmation_email"]
+    }
+  ],
+  "knowledge_bases": [
+    {
+      "id": "kb-company-info",
+      "type": "company-info",
+      "template": "knowledge-bases/company-info.md",
+      "assigned_agents": ["receptionist", "health-specialist", "vehicle-specialist", "luggage-specialist", "finalizer"]
+    },
+    {
+      "id": "kb-general-faq",
+      "type": "faq",
+      "template": "knowledge-bases/faq.md",
+      "assigned_agents": ["receptionist"]
+    },
+    {
+      "id": "kb-claim-procedures",
+      "type": "procedures",
+      "template": "knowledge-bases/procedures.md",
+      "assigned_agents": ["health-specialist", "vehicle-specialist", "luggage-specialist", "finalizer"]
+    },
+    {
+      "id": "kb-insurance-terms",
+      "type": "domain-knowledge",
+      "template": "knowledge-bases/domain-knowledge.md",
+      "assigned_agents": ["health-specialist", "vehicle-specialist", "luggage-specialist"]
+    }
+  ],
+  "workflow": {
+    "type": "branching",
+    "template": "workflows/branching.json",
+    "routing_rules": [
+      {
+        "from": "receptionist",
+        "to": "health-specialist",
+        "condition": "Ha az ügyfél egészségügyi kárról, balesetről vagy orvosi ellátásról beszél."
+      },
+      {
+        "from": "receptionist",
+        "to": "vehicle-specialist",
+        "condition": "Ha az ügyfél gépjárművel kapcsolatos kárról, balesetről vagy lopásról beszél."
+      },
+      {
+        "from": "receptionist",
+        "to": "luggage-specialist",
+        "condition": "Ha az ügyfél poggyászról, útlemondásról vagy légitársasági problémáról beszél."
+      }
+    ]
+  },
+  "output_structure": {
+    "config": {
+      "project.json": "Projekt metaadatok és agent lista",
+      "workflow.json": "ElevenLabs native workflow"
+    },
+    "agents": {
+      "receptionist.md": "Orchestrator prompt",
+      "health-specialist.md": "Egészségügyi specialist prompt",
+      "vehicle-specialist.md": "Gépjármű specialist prompt",
+      "luggage-specialist.md": "Poggyász specialist prompt",
+      "finalizer.md": "Finalizer prompt"
+    },
+    "knowledge-bases": {
+      "company-info.md": "Cég adatok",
+      "general-faq.md": "Általános GYIK",
+      "claim-procedures.md": "Kárigény eljárások",
+      "insurance-terms.md": "Biztosítási fogalmak"
+    }
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "agent.schema.json",
+  "title": "ElevenLabs Voice Agent",
+  "description": "Agent konfiguráció séma",
+  "type": "object",
+  "required": ["id", "name", "role", "voice"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Agent azonosító (kebab-case)",
+      "examples": ["receptionist", "health-specialist", "finalizer"]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Agent megjelenített neve (persona)",
+      "examples": ["Zsófi", "Kata", "Péter"]
+    },
+    "role": {
+      "type": "string",
+      "enum": ["orchestrator", "specialist", "finalizer"],
+      "description": "Agent szerepköre a workflow-ban"
+    },
+    "description": {
+      "type": "string",
+      "description": "Agent rövid leírása"
+    },
+    "prompt_file": {
+      "type": "string",
+      "description": "Prompt markdown fájl útvonala",
+      "examples": ["agents/receptionist.md"]
+    },
+    "first_message": {
+      "type": "string",
+      "description": "Üdvözlő üzenet (csak orchestrator-nál)",
+      "examples": ["Üdvözlöm! EUB Biztosító ügyfélszolgálat, Zsófi vagyok. Miben segíthetek?"]
+    },
+    "llm": {
+      "type": "object",
+      "description": "LLM beállítások",
+      "properties": {
+        "model": {
+          "type": "string",
+          "enum": ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "claude-3-5-sonnet", "gemini-1.5-pro", "gemini-1.5-flash"],
+          "default": "gpt-4o-mini",
+          "description": "LLM modell"
+        },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2,
+          "default": 0,
+          "description": "Kreativitás szint (0 = determinisztikus)"
+        },
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8192,
+          "description": "Maximum token szám válaszonként"
+        }
+      },
+      "additionalProperties": false
+    },
+    "voice": {
+      "type": "object",
+      "required": ["voice_id"],
+      "description": "Hang beállítások",
+      "properties": {
+        "voice_id": {
+          "type": "string",
+          "description": "ElevenLabs voice ID",
+          "examples": ["EXAVITQu4vr4xnSDxMaL", "FGY2WhTYpPnrIDTdsKH5"]
+        },
+        "stability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.5,
+          "description": "Hang stabilitás"
+        },
+        "similarity_boost": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.75,
+          "description": "Hasonlóság erősítés"
+        },
+        "style": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0,
+          "description": "Stílus erősség"
+        },
+        "use_speaker_boost": {
+          "type": "boolean",
+          "default": true,
+          "description": "Speaker boost használata"
+        }
+      },
+      "additionalProperties": false
+    },
+    "knowledge_bases": {
+      "type": "array",
+      "description": "Hozzárendelt tudásbázis ID-k",
+      "items": {
+        "type": "string",
+        "pattern": "^kb-[a-z0-9-]+$"
+      },
+      "examples": [["kb-company-faq", "kb-health-procedures"]]
+    },
+    "tools": {
+      "type": "array",
+      "description": "Elérhető tool-ok",
+      "items": {
+        "type": "object",
+        "required": ["type", "name"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["system", "webhook", "client"],
+            "description": "Tool típus"
+          },
+          "name": {
+            "type": "string",
+            "description": "Tool neve"
+          },
+          "description": {
+            "type": "string",
+            "description": "Tool leírása"
+          },
+          "params": {
+            "type": "object",
+            "description": "Tool paraméterek"
+          }
+        }
+      }
+    },
+    "transfer_targets": {
+      "type": "array",
+      "description": "Transfer célpontok (orchestrator esetén)",
+      "items": {
+        "type": "object",
+        "required": ["agent_id", "condition"],
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "description": "Cél agent ID"
+          },
+          "condition": {
+            "type": "string",
+            "description": "Transfer feltétel természetes nyelven"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": { "role": { "const": "orchestrator" } }
+      },
+      "then": {
+        "required": ["first_message"]
+      }
+    }
+  ]
+}

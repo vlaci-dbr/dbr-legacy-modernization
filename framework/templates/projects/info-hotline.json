@@ -1,0 +1,157 @@
+{
+  "_meta": {
+    "name": "Információs Vonal",
+    "description": "FAQ-alapú információs vonal, ahol az ügyfél több témában is kérdezhet",
+    "template_version": "1.0.0",
+    "example_company": "Budapest Közlekedési Központ",
+    "recommended_agents": 3,
+    "workflow_type": "hub-and-spoke"
+  },
+  "required_inputs": [
+    {
+      "id": "company_name",
+      "label": "Szervezet neve",
+      "type": "string",
+      "example": "Budapest Közlekedési Központ"
+    },
+    {
+      "id": "company_phone",
+      "label": "Telefonszám",
+      "type": "string",
+      "example": "+36 1 BKK INFO"
+    },
+    {
+      "id": "company_email",
+      "label": "Email cím",
+      "type": "string",
+      "example": "info@bkk.hu"
+    },
+    {
+      "id": "opening_hours",
+      "label": "Elérhetőség",
+      "type": "string",
+      "example": "0-24"
+    },
+    {
+      "id": "topics",
+      "label": "Témakörök",
+      "type": "array",
+      "example": ["Menetrendek", "Jegyárak és bérletek", "Forgalmi információk"]
+    }
+  ],
+  "agents": [
+    {
+      "id": "info-hub",
+      "name_suggestion": "Info",
+      "role": "orchestrator",
+      "description": "Központi információs pont, ahonnan a témákhoz irányít és vissza",
+      "template": "agents/orchestrator.md",
+      "voice_style": "female.friendly",
+      "first_message": "Üdvözlöm a {company_name} információs vonalán! Miben segíthetek? Menetrendek, jegyárak, vagy forgalmi információk?"
+    },
+    {
+      "id": "schedule-expert",
+      "name_suggestion": "Menetrend Szakértő",
+      "role": "specialist",
+      "description": "Menetrendekkel kapcsolatos kérdések",
+      "template": "agents/specialist.md",
+      "voice_style": "male.professional",
+      "specialty": "Menetrendek és útvonalak",
+      "topics": [
+        "Járatok indulási ideje",
+        "Útvonaltervezés",
+        "Átszállási lehetőségek",
+        "Éjszakai közlekedés"
+      ]
+    },
+    {
+      "id": "ticket-expert",
+      "name_suggestion": "Jegy Szakértő",
+      "role": "specialist",
+      "description": "Jegyekkel és bérletekkel kapcsolatos kérdések",
+      "template": "agents/specialist.md",
+      "voice_style": "female.professional",
+      "specialty": "Jegyek és bérletek",
+      "topics": [
+        "Jegyárak",
+        "Bérlet típusok",
+        "Kedvezmények",
+        "Vásárlási helyek"
+      ]
+    }
+  ],
+  "knowledge_bases": [
+    {
+      "id": "kb-company-info",
+      "type": "company-info",
+      "template": "knowledge-bases/company-info.md",
+      "assigned_agents": ["info-hub", "schedule-expert", "ticket-expert"]
+    },
+    {
+      "id": "kb-general-faq",
+      "type": "faq",
+      "template": "knowledge-bases/faq.md",
+      "assigned_agents": ["info-hub"]
+    },
+    {
+      "id": "kb-schedules",
+      "type": "domain-knowledge",
+      "template": "knowledge-bases/domain-knowledge.md",
+      "assigned_agents": ["schedule-expert"]
+    },
+    {
+      "id": "kb-tickets",
+      "type": "product-catalog",
+      "template": "knowledge-bases/product-catalog.md",
+      "assigned_agents": ["ticket-expert"]
+    }
+  ],
+  "workflow": {
+    "type": "hub-and-spoke",
+    "template": "workflows/hub-and-spoke.json",
+    "routing_rules": [
+      {
+        "from": "info-hub",
+        "to": "schedule-expert",
+        "condition": "Ha az ügyfél menetrendről, útvonalról, indulási időről vagy átszállásról kérdez."
+      },
+      {
+        "from": "info-hub",
+        "to": "ticket-expert",
+        "condition": "Ha az ügyfél jegyekről, bérletekről, árakról vagy kedvezményekről kérdez."
+      },
+      {
+        "from": "schedule-expert",
+        "to": "info-hub",
+        "condition": "Ha a menetrend kérdés megválaszolva és az ügyfél más témában is kérdezne."
+      },
+      {
+        "from": "ticket-expert",
+        "to": "info-hub",
+        "condition": "Ha a jegy/bérlet kérdés megválaszolva és az ügyfél más témában is kérdezne."
+      }
+    ]
+  },
+  "special_features": {
+    "return_to_hub": true,
+    "no_finalizer": true,
+    "multiple_topics_per_call": true
+  },
+  "output_structure": {
+    "config": {
+      "project.json": "Projekt metaadatok",
+      "workflow.json": "ElevenLabs native workflow"
+    },
+    "agents": {
+      "info-hub.md": "Info hub (orchestrator) prompt",
+      "schedule-expert.md": "Menetrend szakértő prompt",
+      "ticket-expert.md": "Jegy szakértő prompt"
+    },
+    "knowledge-bases": {
+      "company-info.md": "Szervezet adatok",
+      "general-faq.md": "Általános GYIK",
+      "schedules.md": "Menetrend tudásbázis",
+      "tickets.md": "Jegyek és bérletek"
+    }
+  }
+}

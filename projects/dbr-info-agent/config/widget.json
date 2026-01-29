@@ -1,0 +1,29 @@
+{
+  "agent_id": "REPLACE_WITH_ELEVENLABS_AGENT_ID",
+  "position": "bottom-right",
+  "theme": {
+    "primary_color": "#1E3A5F",
+    "secondary_color": "#4A90D9",
+    "background_color": "#FFFFFF",
+    "text_color": "#333333",
+    "border_radius": "12px",
+    "dark_mode": false
+  },
+  "button": {
+    "icon": "microphone",
+    "size": "medium",
+    "pulse_animation": true,
+    "text": "Legacy Szakerto"
+  },
+  "welcome_message": "Udvozlom! DBR tunder vagyok, legacy modernizacios szakerto. Kattintson ide, ha erdekel a regi rendszerek korszerusitese!",
+  "behavior": {
+    "auto_open": false,
+    "auto_open_delay_ms": 5000,
+    "show_on_mobile": true,
+    "persist_across_pages": true,
+    "close_on_outside_click": false
+  },
+  "accessibility": {
+    "aria_label": "DBR tunder - Legacy modernizacios szakerto hangasszisztens"
+  }
+}

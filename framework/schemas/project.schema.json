@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "project.schema.json",
+  "title": "ElevenLabs Voice Agent Project",
+  "description": "Projekt konfiguráció séma ElevenLabs voice agent projektekhez",
+  "type": "object",
+  "required": ["id", "name", "language", "agents"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Projekt azonosító (kebab-case)",
+      "examples": ["eub-callcenter", "customer-service-demo"]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Projekt megjelenített neve",
+      "examples": ["EUB Biztosító Ügyfélszolgálat", "Customer Service Demo"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Projekt rövid leírása"
+    },
+    "language": {
+      "type": "string",
+      "enum": ["hu", "en", "de", "fr", "es", "it"],
+      "default": "hu",
+      "description": "Projekt nyelve"
+    },
+    "company": {
+      "type": "object",
+      "description": "Cég adatok",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Cég neve"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Cég telefonszáma"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Cég email címe"
+        },
+        "website": {
+          "type": "string",
+          "format": "uri",
+          "description": "Cég weboldala"
+        },
+        "address": {
+          "type": "string",
+          "description": "Cég címe"
+        },
+        "opening_hours": {
+          "type": "string",
+          "description": "Nyitvatartás",
+          "examples": ["H-P 8:00-17:00"]
+        }
+      }
+    },
+    "agents": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Projekt agent-jei",
+      "items": {
+        "$ref": "agent.schema.json"
+      }
+    },
+    "knowledge_bases": {
+      "type": "array",
+      "description": "Projekt tudásbázisai",
+      "items": {
+        "$ref": "knowledge-base.schema.json"
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "description": "Workflow konfiguráció referencia",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["linear", "branching", "hub-and-spoke", "transfer-tool"],
+          "description": "Workflow típus"
+        },
+        "config_file": {
+          "type": "string",
+          "description": "Workflow konfig fájl útvonala",
+          "default": "config/workflow.json"
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Létrehozás dátuma"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Utolsó módosítás dátuma"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "default": "1.0.0",
+      "description": "Projekt verzió"
+    }
+  },
+  "additionalProperties": false
+}

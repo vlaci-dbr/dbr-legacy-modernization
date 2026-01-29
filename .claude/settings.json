@@ -1,0 +1,103 @@
+{
+  "project": {
+    "name": "Conversational AI Template Framework",
+    "type": "framework",
+    "language": "hu",
+    "description": "Újrafelhasználható keretrendszer ElevenLabs Conversational AI voice agent projektek létrehozásához"
+  },
+  "commands": {
+    "init-project": {
+      "description": "Új voice agent projekt létrehozása interaktív wizard segítségével",
+      "guide": "project-setup-guide.md"
+    },
+    "create-project": {
+      "description": "Új voice agent projekt létrehozása sablon alapján",
+      "guide": "project-setup-guide.md"
+    },
+    "generate-agent": {
+      "description": "Egyedi agent prompt generálása template alapján",
+      "guide": "agent-generation-guide.md"
+    },
+    "generate-workflow": {
+      "description": "ElevenLabs native workflow generálása",
+      "guide": "workflow-generation-guide.md"
+    },
+    "generate-kb": {
+      "description": "Tudásbázis tartalom generálása template alapján",
+      "guide": "kb-generation-guide.md"
+    },
+    "validate": {
+      "description": "Projekt validálása (struktúra, séma, referenciák, prompt minőség)"
+    },
+    "deploy": {
+      "description": "Projekt feltöltése ElevenLabs-ra Python utility segítségével"
+    },
+    "preview": {
+      "description": "Lokális előnézet indítása a widget teszteléséhez"
+    },
+    "sync-elevenlabs": {
+      "description": "ElevenLabs szinkronizálás (push/pull változtatások)"
+    }
+  },
+  "guides": {
+    "project-setup-guide": {
+      "path": ".claude/guides/project-setup-guide.md",
+      "description": "Projekt létrehozási útmutató - sablon választás, adatgyűjtés, generálás"
+    },
+    "agent-generation-guide": {
+      "path": ".claude/guides/agent-generation-guide.md",
+      "description": "Agent prompt generálási útmutató - 6-pillar struktúra, szerepek"
+    },
+    "workflow-generation-guide": {
+      "path": ".claude/guides/workflow-generation-guide.md",
+      "description": "Workflow generálási útmutató - ElevenLabs native formátum"
+    },
+    "kb-generation-guide": {
+      "path": ".claude/guides/kb-generation-guide.md",
+      "description": "KB generálási útmutató - típusok, formázás"
+    },
+    "deployment-guide": {
+      "path": ".claude/guides/deployment-guide.md",
+      "description": "Deployment útmutató - GitHub Pages, Vercel, Netlify, Docker"
+    }
+  },
+  "templates": {
+    "agents": {
+      "path": "framework/templates/agents/",
+      "types": ["orchestrator", "specialist", "finalizer"]
+    },
+    "workflows": {
+      "path": "framework/templates/workflows/",
+      "types": ["linear", "branching", "hub-and-spoke", "transfer-tool"]
+    },
+    "knowledge-bases": {
+      "path": "framework/templates/knowledge-bases/",
+      "types": ["faq", "product-catalog", "company-info", "procedures", "domain-knowledge"]
+    },
+    "projects": {
+      "path": "framework/templates/projects/",
+      "types": ["customer-service", "appointment-booking", "info-hotline", "event-guide", "insurance-call-center"]
+    }
+  },
+  "schemas": {
+    "project": "framework/schemas/project.schema.json",
+    "agent": "framework/schemas/agent.schema.json",
+    "workflow": "framework/schemas/workflow.schema.json",
+    "knowledge-base": "framework/schemas/knowledge-base.schema.json",
+    "deployment": "framework/schemas/deployment.schema.json",
+    "widget": "framework/schemas/widget.schema.json"
+  },
+  "defaults": {
+    "llm-settings": "framework/defaults/llm-settings.json",
+    "audio-settings": "framework/defaults/audio-settings.json",
+    "voices": "framework/defaults/voices.json"
+  },
+  "conventions": {
+    "agent-id": "kebab-case (pl. health-specialist)",
+    "kb-id": "kb- prefix (pl. kb-company-faq)",
+    "node-id": "node_ prefix (pl. node_receptionist)",
+    "edge-id": "edge_ prefix (pl. edge_to_health)",
+    "prompt-language": "magyar (vagy projekt nyelve)",
+    "config-language": "angol"
+  }
+}

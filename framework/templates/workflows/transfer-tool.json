@@ -1,0 +1,31 @@
+{
+  "_meta": {
+    "description": "transfer_to_agent system tool konfiguráció",
+    "usage": "Egyszerű 2-3 agent közötti transfer",
+    "note": "Ez egy tool, amit az agent tools listájába kell tenni, nem workflow graph"
+  },
+  "transfer_tool": {
+    "type": "system",
+    "name": "transfer_to_agent",
+    "description": "Átadja a beszélgetést egy másik agent-nek a feltétel alapján.",
+    "params": {
+      "system_tool_type": "transfer_to_agent",
+      "transfers": [
+        {
+          "agent_id": "TARGET_AGENT_1_ID",
+          "condition": "TRANSFER_CONDITION_1",
+          "delay_ms": 500,
+          "transfer_message": "TRANSFER_MESSAGE_1",
+          "enable_transferred_agent_first_message": true
+        },
+        {
+          "agent_id": "TARGET_AGENT_2_ID",
+          "condition": "TRANSFER_CONDITION_2",
+          "delay_ms": 500,
+          "transfer_message": "TRANSFER_MESSAGE_2",
+          "enable_transferred_agent_first_message": true
+        }
+      ]
+    }
+  }
+}
